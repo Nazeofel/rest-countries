@@ -1,0 +1,162 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;600;800&display=swap");
+@import "resets.scss";
+
+$db: hsl(209, 23%, 22%);
+$vdb: hsl(207, 26%, 17%);
+$vdb-text: hsl(200, 15%, 8%);
+$dg: hsl(0, 0%, 52%);
+$vlg: hsl(0, 0%, 98%);
+$white: hsl(0, 0%, 100%);
+
+body {
+  font-family: "Nunito Sans", sans-serif;
+  background-color: $vdb;
+}
+
+.navigation {
+  display: flex;
+  padding-block: 40px;
+  justify-content: space-around;
+  background-color: $db;
+  color: $white;
+  box-shadow: 0px 0px 10px 1px black;
+  > .nav-items {
+    display: flex;
+    width: 90%;
+    justify-content: space-between;
+    > .website-title {
+      font-size: 1.2rem;
+    }
+    > .theme-button {
+      border: none;
+      background: none;
+      color: white;
+    }
+  }
+}
+
+form {
+  display: flex;
+  width: 90%;
+  flex-direction: column;
+  margin: auto;
+  padding-block: 40px;
+  > input,
+  ::placeholder {
+    color: white;
+    border-radius: 5px;
+    padding: 15px;
+    background-color: $db;
+    margin-bottom: 40px;
+    border: none;
+  }
+
+  > select {
+    border-radius: 5px;
+    padding: 15px;
+    background-color: $db;
+    border: none;
+    width: fit-content;
+    color: white;
+  }
+}
+
+.main-container {
+  display: grid;
+  place-items: center;
+  gap: 20px;
+  width: 90%;
+  margin-inline: auto;
+}
+
+.country-container {
+  display: flex;
+  width: fit-content;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 40px;
+}
+
+.card-infos {
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+  background-color: $db;
+  color: $white;
+  border-radius: 5px 5px 5px 5px;
+  margin-inline: auto;
+}
+
+.country-flag > img {
+  border-radius: 5px 5px 0px 0px;
+}
+
+.text-container {
+  width: 80%;
+  margin: auto;
+  > .country-name {
+    padding-block: 20px;
+    font-weight: 800;
+  }
+  > :nth-child(3) {
+    padding-block: 5px;
+  }
+  > :nth-child(4) {
+    padding-bottom: 20px;
+  }
+}
+
+.base-country-infos {
+  font-weight: 600;
+  > span {
+    font-weight: initial;
+    padding-left: 10px;
+  }
+}
+
+.select {
+  background: $db;
+  max-width: 200px;
+  color: #fff;
+  border-radius: 5px;
+  position: relative;
+  user-select: none;
+
+  height: fit-content;
+  .selected {
+    padding: 10px;
+    cursor: pointer;
+  }
+  .options {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    background: $db;
+
+    color: white;
+    width: 100%;
+    left: 0;
+    border-radius: 5px;
+    .option {
+      cursor: pointer;
+      padding: 5px;
+    }
+    &.active {
+      display: block;
+    }
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  form {
+    flex-direction: row;
+    justify-content: space-between;
+    > input {
+      width: 35%;
+    }
+  }
+
+  a {
+    max-width: 320px;
+  }
+}
