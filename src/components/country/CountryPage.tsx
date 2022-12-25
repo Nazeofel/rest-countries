@@ -6,6 +6,7 @@ import jsonParser from "../../utils/jsonParser";
 
 export default function CountryPage() {
   const params = useParams().id;
+  console.log(params);
   const [countryData, setCountryData] = React.useState([]);
 
   React.useEffect(() => {
