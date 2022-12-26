@@ -1,9 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import "../scss/App.scss";
-import { CountryStats } from "../utils/types";
-import Card from "../components/Card";
-import { Link } from "react-router-dom";
 import jsonParser from "../utils/jsonParser";
+import Countries from "./country/Countries";
+import Form from "./UI/Form";
+import Navbar from "./UI/Navbar";
 
 export default function App() {
   const [countries, setCountries] = React.useState([]);
@@ -14,20 +15,25 @@ export default function App() {
   const [countryInvalid, setCountryInvalid] = React.useState(false);
 
   React.useEffect(() => {
-    if (searchByCountry === "") {
-      const fetchCountries = async () => {
+    setIsFetching(true);
+    const fetchCountries = async () => {
+      if (searchByCountry === "") {
         const fetching = await fetch("https://restcountries.com/v2/all");
-        if (fetching.ok) {
+        if (fetching.status !== 404) {
           const parsedJSON = await fetching.json();
           const countryMap = jsonParser(parsedJSON);
+          setIsFetching(false);
           return setCountries(countryMap);
         } else {
           return console.log("fetching not ok");
         }
-      };
-      fetchCountries();
-    } else {
-      const fetchCountryByName = async () => {
+      } else {
+        return;
+      }
+    };
+
+    const fetchCountryByName = async () => {
+      if (searchByCountry !== "") {
         const fetching = await fetch(
           `https://restcountries.com/v3.1/name/${searchByCountry}`
         );
@@ -35,19 +41,27 @@ export default function App() {
           setCountryInvalid(false);
           const parsedJSON = await fetching.json();
           const countryMap = await jsonParser(parsedJSON);
+          setIsFetching(false);
           return setCountries(countryMap);
         } else {
           return setCountryInvalid(true);
         }
-      };
-      fetchCountryByName();
-    }
+      } else {
+        return;
+      }
+    };
+    const timeOut = setTimeout(fetchCountryByName, 500);
+    const timeOut2 = setTimeout(fetchCountries, 500);
+    return () => {
+      clearTimeout(timeOut);
+      clearTimeout(timeOut2);
+    };
   }, [searchByCountry]);
 
   React.useEffect(() => {
+    setIsFetching(true);
     async function fetchCountriesByRegion() {
       if (searchByRegion === "" || isFetching === true) return;
-      setIsFetching(true);
       const fetching = await fetch(
         `https://restcountries.com/v3.1/region/${searchByRegion}`
       );
@@ -60,111 +74,40 @@ export default function App() {
         return;
       }
     }
-    fetchCountriesByRegion();
+    const timeOut = setTimeout(fetchCountriesByRegion, 500);
+
+    return () => {
+      clearTimeout(timeOut);
+    };
   }, [searchByRegion]);
 
   function getRegion(e: any) {
     const value = e.target.getAttribute("data-value");
-    setSearchByRegion(value);
-  }
-
-  function RenderCountries() {
-    return (
-      <div className="country-container">
-        {countryInvalid === false ? (
-          countries.map((a: CountryStats, b: number) => {
-            return (
-              <React.Fragment key={b}>
-                <Link to={"country/" + a.officialName}>
-                  <Card
-                    officialName={a.officialName}
-                    nativeName={a.nativeName}
-                    population={a.population}
-                    region={a.region}
-                    subRegion={a.subRegion}
-                    domain={a.domain}
-                    currency={a.currency}
-                    languages={a.languages}
-                    borderCountries={a.borderCountries}
-                    flags={a.flags}
-                    capital={a.capital}
-                  />
-                </Link>
-              </React.Fragment>
-            );
-          })
-        ) : (
-          <h1>NO VALID COUNTRY</h1>
-        )}
-      </div>
-    );
+    if (isFetching === true) {
+      return;
+    } else {
+      setSearchByRegion(value);
+    }
   }
 
   return (
     <>
-      <nav className="navigation">
-        <div className="nav-items">
-          <h1 className="website-title">Where in the World?</h1>
-          <button className="theme-button">Dark Mode</button>
-        </div>
-      </nav>
+      <Navbar />
       <main className="main-container">
-        <form>
-          <input
-            value={searchByCountry}
-            type="text"
-            placeholder="search for a country"
-            onChange={(e) => setSearchByCountry(e.target.value)}
-          />
-          <div className="select">
-            <div
-              className="selected"
-              onClick={() => setDropdownState((prev: boolean) => !prev)}
-            >
-              Filter by Region
-            </div>
-            <div className={dropdownState ? "options active" : "options"}>
-              <div data-value={searchByRegion} id="regions">
-                <div
-                  className="option"
-                  data-value="Africa"
-                  onClick={(e) => getRegion(e)}
-                >
-                  Africa
-                </div>
-                <div
-                  className="option"
-                  data-value="America"
-                  onClick={(e) => getRegion(e)}
-                >
-                  America
-                </div>
-                <div
-                  className="option"
-                  data-value="Asia"
-                  onClick={(e) => getRegion(e)}
-                >
-                  Asia
-                </div>
-                <div
-                  className="option"
-                  data-value="Europe"
-                  onClick={(e) => getRegion(e)}
-                >
-                  Europe
-                </div>
-                <div
-                  className="option"
-                  data-value="Oceania"
-                  onClick={(e) => getRegion(e)}
-                >
-                  Oceania
-                </div>
-              </div>
-            </div>
-          </div>
-        </form>
-        <RenderCountries />
+        <Form
+          setDropdownState={setDropdownState}
+          dropdownState={dropdownState}
+          searchByCountry={searchByCountry}
+          setSearchByCountry={setSearchByCountry}
+          setSearchByRegion={setSearchByRegion}
+          searchByRegion={searchByRegion}
+          getRegion={getRegion}
+        />
+        <Countries
+          countries={countries}
+          isFetching={isFetching}
+          countryInvalid={countryInvalid}
+        />
       </main>
     </>
   );

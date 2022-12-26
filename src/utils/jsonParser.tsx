@@ -1,7 +1,7 @@
 import { CountryStats, ApiObject } from "./types";
 
 export default function jsonParser(parsedJSON: any) {
-  const countryMap = parsedJSON.map((a: ApiObject, b: number) => {
+  const countryMap = parsedJSON.map((a: ApiObject, _b: number) => {
     const obj: CountryStats = {
       officialName: typeof a.name === "string" ? a.name : [a.name.common][0],
       nativeName: a.nativeName,

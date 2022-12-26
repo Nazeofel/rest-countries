@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import Card from "../Card";
+import Card from "./CountryCard";
 import React from "react";
 import { CountryStats } from "../../utils/types";
 import jsonParser from "../../utils/jsonParser";

@@ -47,3 +47,13 @@ export interface ApiObject {
   cioc: string;
   independent: boolean;
 }
+
+export interface FormData {
+  dropdownState: boolean;
+  searchByRegion: string;
+  searchByCountry: string;
+  setSearchByRegion(e: React.SetStateAction<string>): void;
+  setSearchByCountry(e: React.SetStateAction<string>): void;
+  setDropdownState(e: React.SetStateAction<boolean>): void;
+  getRegion(e: React.MouseEvent<HTMLDivElement, MouseEvent>): void;
+}
