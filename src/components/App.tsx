@@ -20,12 +20,13 @@ export default function App() {
       if (searchByCountry === "") {
         const fetching = await fetch("https://restcountries.com/v2/all");
         if (fetching.status !== 404) {
+          setCountryInvalid(false);
           const parsedJSON = await fetching.json();
           const countryMap = jsonParser(parsedJSON);
           setIsFetching(false);
           return setCountries(countryMap);
         } else {
-          return console.log("fetching not ok");
+          return setCountryInvalid(true);
         }
       } else {
         return;

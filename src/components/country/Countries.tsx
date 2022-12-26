@@ -10,7 +10,9 @@ export default function Countries(props: {
 }) {
   return (
     <>
-      {props.isFetching === false ? (
+      {props.countryInvalid ? (
+        <h1 style={{ color: "white" }}>COUNTRY IS INVALID</h1>
+      ) : (
         <div className="country-container">
           {props.countries.map((a: CountryStats, b: number) => {
             return (
@@ -34,13 +36,6 @@ export default function Countries(props: {
             );
           })}
         </div>
-      ) : (
-        <h1 style={{ color: "white" }}>
-          {" "}
-          {props.countryInvalid
-            ? "COUNTRY IS INVALID"
-            : "WAITING FOR DATA TO LOAD"}{" "}
-        </h1>
       )}
     </>
   );

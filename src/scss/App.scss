@@ -65,16 +65,18 @@ form {
   display: grid;
   place-items: center;
   gap: 20px;
-  width: 90%;
   margin-inline: auto;
 }
 
 .country-container {
   display: flex;
+  width: -moz-fit-content;
   width: fit-content;
-  justify-content: center;
   flex-wrap: wrap;
-  gap: 40px;
+  margin-bottom: 5;
+  row-gap: 50px;
+  width: 90%;
+  justify-content: center;
 }
 
 .card-infos {
@@ -89,6 +91,7 @@ form {
 
 .country-flag > img {
   border-radius: 5px 5px 0px 0px;
+  aspect-ratio: 224/150;
 }
 
 .text-container {
