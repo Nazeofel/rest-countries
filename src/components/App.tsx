@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
+import { Outlet, useParams, useSearchParams } from "react-router-dom";
 import "../scss/App.scss";
 import jsonParser from "../utils/jsonParser";
 import Countries from "./country/Countries";
@@ -13,6 +14,8 @@ export default function App() {
   const [isFetching, setIsFetching] = React.useState(false);
   const [dropdownState, setDropdownState] = React.useState(false);
   const [countryInvalid, setCountryInvalid] = React.useState(false);
+
+  const params = useParams();
 
   React.useEffect(() => {
     setIsFetching(true);
@@ -94,21 +97,28 @@ export default function App() {
   return (
     <>
       <Navbar />
+
       <main className="main-container">
-        <Form
-          setDropdownState={setDropdownState}
-          dropdownState={dropdownState}
-          searchByCountry={searchByCountry}
-          setSearchByCountry={setSearchByCountry}
-          setSearchByRegion={setSearchByRegion}
-          searchByRegion={searchByRegion}
-          getRegion={getRegion}
-        />
-        <Countries
-          countries={countries}
-          isFetching={isFetching}
-          countryInvalid={countryInvalid}
-        />
+        {params.id === undefined ? (
+          <>
+            <Form
+              setDropdownState={setDropdownState}
+              dropdownState={dropdownState}
+              searchByCountry={searchByCountry}
+              setSearchByCountry={setSearchByCountry}
+              setSearchByRegion={setSearchByRegion}
+              searchByRegion={searchByRegion}
+              getRegion={getRegion}
+            />
+            <Countries
+              countries={countries}
+              isFetching={isFetching}
+              countryInvalid={countryInvalid}
+            />{" "}
+          </>
+        ) : (
+          <Outlet />
+        )}
       </main>
     </>
   );
