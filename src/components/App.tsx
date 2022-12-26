@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
-import { Outlet, useParams, useSearchParams } from "react-router-dom";
+import { Outlet, useParams } from "react-router-dom";
 import "../scss/App.scss";
 import jsonParser from "../utils/jsonParser";
 import Countries from "./country/Countries";

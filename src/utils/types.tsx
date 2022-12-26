@@ -1,4 +1,4 @@
-export interface CountryStats {
+export type CountryStats = {
   officialName: string;
   nativeName: string;
   capital: string;
@@ -10,9 +10,19 @@ export interface CountryStats {
   languages: string[];
   borderCountries: string[];
   flags: string;
-}
+};
 
-export interface ApiObject {
+export type FormData = {
+  dropdownState: boolean;
+  searchByRegion: string;
+  searchByCountry: string;
+  setSearchByRegion(e: React.SetStateAction<string>): void;
+  setSearchByCountry(e: React.SetStateAction<string>): void;
+  setDropdownState(e: React.SetStateAction<boolean>): void;
+  getRegion(e: React.MouseEvent<HTMLDivElement, MouseEvent>): void;
+};
+
+export type ApiObject = {
   name: any;
   code: string;
   symbol: string;
@@ -46,14 +56,4 @@ export interface ApiObject {
   regionalBlocs: string[];
   cioc: string;
   independent: boolean;
-}
-
-export interface FormData {
-  dropdownState: boolean;
-  searchByRegion: string;
-  searchByCountry: string;
-  setSearchByRegion(e: React.SetStateAction<string>): void;
-  setSearchByCountry(e: React.SetStateAction<string>): void;
-  setDropdownState(e: React.SetStateAction<boolean>): void;
-  getRegion(e: React.MouseEvent<HTMLDivElement, MouseEvent>): void;
-}
+};
