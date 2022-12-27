@@ -2,7 +2,7 @@ import jsonParser from "./jsonParser";
 
 export const fetchCountries = async (searchByCountry: string) => {
   if (searchByCountry !== "") {
-    return [];
+    return;
   }
   const fetching = await fetch("https://restcountries.com/v2/all");
   if (fetching.status !== 200) {
@@ -12,9 +12,11 @@ export const fetchCountries = async (searchByCountry: string) => {
   return jsonParser(parsedJSON);
 };
 
-export const fetchCountryByName = async (searchByCountry: string) => {
-  if (searchByCountry === "") {
-    return [];
+export const fetchCountryByName = async (
+  searchByCountry: string | undefined
+) => {
+  if (searchByCountry === "" || searchByCountry === undefined) {
+    return;
   }
 
   const fetching = await fetch(
@@ -36,19 +38,6 @@ export const fetchCountriesByRegion = async (searchByRegion: string) => {
   );
   if (fetching.status !== 200) {
     throw "Invalid Region";
-  }
-  const parsedJSON = await fetching.json();
-  return jsonParser(parsedJSON);
-};
-
-export const fetchCountryByParams = async (params: string | undefined) => {
-  if (params === undefined) {
-    return [];
-  }
-
-  const fetching = await fetch(`https://restcountries.com/v3.1/name/${params}`);
-  if (fetching.status !== 200) {
-    throw "Invalid Parameters";
   }
   const parsedJSON = await fetching.json();
   return jsonParser(parsedJSON);

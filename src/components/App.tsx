@@ -11,60 +11,45 @@ import Countries from "./country/Countries";
 import Form from "./UI/Form";
 import Navbar from "./UI/Navbar";
 import { useCuteBear } from "../utils/States";
+import { useDebounce } from "../utils/customHooks";
 
 export default function App() {
   const cuteBear = useCuteBear();
   const regionChange = useCuteBear((state) => state.region);
   const countryChange = useCuteBear((state) => state.countryName);
   const params = useParams().id;
+  const debouncedCountries = useDebounce(countryChange, 500);
+  const debouncedRegion = useDebounce(regionChange, 500);
 
   React.useEffect(() => {
-    const x = async () => {
+    (async () => {
       cuteBear.setIsCountryValid("fetching");
       try {
-        cuteBear.setCountries(await fetchCountries(countryChange));
+        if (debouncedCountries) {
+          cuteBear.setCountries(await fetchCountryByName(debouncedCountries));
+        } else {
+          cuteBear.setCountries(await fetchCountries(debouncedCountries));
+        }
       } catch {
         cuteBear.setIsCountryValid("invalid");
       } finally {
-        console.log("done");
+        cuteBear.setIsCountryValid("");
       }
-    };
-
-    const y = async () => {
-      cuteBear.setIsCountryValid("fetching");
-      try {
-        cuteBear.setCountries(await fetchCountryByName(countryChange));
-      } catch {
-        cuteBear.setIsCountryValid("invalid");
-      } finally {
-        console.log("done");
-      }
-    };
-
-    const timeOut = setTimeout(y, 500);
-    const timeOut2 = setTimeout(x, 500);
-    return () => {
-      clearTimeout(timeOut);
-      clearTimeout(timeOut2);
-    };
-  }, [countryChange]);
+    })();
+  }, [debouncedCountries]);
 
   React.useEffect(() => {
-    const x = async () => {
+    (async () => {
       cuteBear.setIsCountryValid("fetching");
       try {
         cuteBear.setCountries(await fetchCountriesByRegion(regionChange));
       } catch {
         cuteBear.setIsCountryValid("invalid");
       } finally {
-        console.log("done");
+        cuteBear.setIsCountryValid("");
       }
-    };
-    const timeOut = setTimeout(x, 500);
-    return () => {
-      clearTimeout(timeOut);
-    };
-  }, [regionChange]);
+    })();
+  }, [debouncedRegion]);
 
   return (
     <>

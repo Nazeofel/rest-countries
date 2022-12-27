@@ -2,9 +2,8 @@ import { useParams } from "react-router-dom";
 import Card from "./CountryCard";
 import React from "react";
 import { CountryStats } from "../../utils/types";
-import jsonParser from "../../utils/jsonParser";
 import { useCuteBear } from "../../utils/States";
-import { fetchCountryByParams } from "../../utils/ApiCalls";
+import { fetchCountryByName } from "../../utils/ApiCalls";
 
 export default function CountryPage() {
   const params = useParams().id;
@@ -15,7 +14,7 @@ export default function CountryPage() {
     const x = async () => {
       cuteBear.setIsCountryValid("fetching");
       try {
-        cuteBear.setCountries(await fetchCountryByParams(params));
+        cuteBear.setCountries(await fetchCountryByName(params));
       } catch {
         cuteBear.setIsCountryValid("invalid");
       } finally {
