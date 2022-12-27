@@ -3,28 +3,31 @@ import Card from "./CountryCard";
 import React from "react";
 import { CountryStats } from "../../utils/types";
 import jsonParser from "../../utils/jsonParser";
+import { useCuteBear } from "../../utils/States";
+import { fetchCountryByParams } from "../../utils/ApiCalls";
 
 export default function CountryPage() {
   const params = useParams().id;
-  console.log(params);
-  const [countryData, setCountryData] = React.useState([]);
+  const cuteBear = useCuteBear();
+  const contryBear: CountryStats[] = cuteBear.countries;
 
   React.useEffect(() => {
-    async function fetchCountryByName() {
-      if (params === undefined) return;
-      const fetching = await fetch(
-        `https://restcountries.com/v3.1/name/${params}`
-      );
-      const parsedJSON = await fetching.json();
-      const countryMap = await jsonParser(parsedJSON);
-      setCountryData(countryMap);
-    }
-    fetchCountryByName();
+    const x = async () => {
+      cuteBear.setIsCountryValid("fetching");
+      try {
+        cuteBear.setCountries(await fetchCountryByParams(params));
+      } catch {
+        cuteBear.setIsCountryValid("invalid");
+      } finally {
+        console.log("done");
+      }
+    };
+    x();
   }, [params]);
 
   return (
     <>
-      {countryData.map((a: CountryStats, b: number) => {
+      {contryBear.map((a: CountryStats, b: number) => {
         return (
           <Card
             officialName={a.officialName}

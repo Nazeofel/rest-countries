@@ -12,15 +12,20 @@ export type CountryStats = {
   flags: string;
 };
 
-export type FormData = {
-  dropdownState: boolean;
-  searchByRegion: string;
-  searchByCountry: string;
-  setSearchByRegion(e: React.SetStateAction<string>): void;
-  setSearchByCountry(e: React.SetStateAction<string>): void;
-  setDropdownState(e: React.SetStateAction<boolean>): void;
-  getRegion(e: React.MouseEvent<HTMLDivElement, MouseEvent>): void;
-};
+export type status = "done" | "fetching" | "invalid" | "";
+
+export interface BearState {
+  countries: CountryStats[];
+  region: string;
+  countryName: string;
+  dropDownState: boolean;
+  countryValid: status;
+  setIsCountryValid: (state: status) => void;
+  setDropDown: (state: boolean) => void;
+  setSearchByCountry: (state: string) => void;
+  setRegion: (state: string) => void;
+  setCountries: (state: CountryStats[]) => void;
+}
 
 export type ApiObject = {
   name: any;

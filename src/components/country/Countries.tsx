@@ -2,19 +2,19 @@ import { CountryStats } from "../../utils/types";
 import { Link } from "react-router-dom";
 import Card from "./CountryCard";
 import React from "react";
+import { useCuteBear } from "../../utils/States";
 
-export default function Countries(props: {
-  isFetching: boolean;
-  countryInvalid: boolean;
-  countries: CountryStats[];
-}) {
+export default function Countries() {
+  const cuteBear = useCuteBear();
+  const contryBear: CountryStats[] = cuteBear.countries;
+  const countryValid = cuteBear.countryValid;
   return (
     <>
-      {props.countryInvalid ? (
+      {countryValid === "invalid" ? (
         <h1 style={{ color: "white" }}>COUNTRY IS INVALID</h1>
       ) : (
         <div className="country-container">
-          {props.countries.map((a: CountryStats, b: number) => {
+          {contryBear.map((a: CountryStats, b: number) => {
             return (
               <React.Fragment key={b}>
                 <Link to={"country/" + a.officialName}>

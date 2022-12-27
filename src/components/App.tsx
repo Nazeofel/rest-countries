@@ -2,119 +2,78 @@
 import React from "react";
 import { Outlet, useParams } from "react-router-dom";
 import "../scss/App.scss";
-import jsonParser from "../utils/jsonParser";
+import {
+  fetchCountries,
+  fetchCountriesByRegion,
+  fetchCountryByName,
+} from "../utils/ApiCalls";
 import Countries from "./country/Countries";
 import Form from "./UI/Form";
 import Navbar from "./UI/Navbar";
+import { useCuteBear } from "../utils/States";
 
 export default function App() {
-  const [countries, setCountries] = React.useState([]);
-  const [searchByCountry, setSearchByCountry] = React.useState("");
-  const [searchByRegion, setSearchByRegion] = React.useState("");
-  const [isFetching, setIsFetching] = React.useState(false);
-  const [dropdownState, setDropdownState] = React.useState(false);
-  const [countryInvalid, setCountryInvalid] = React.useState(false);
-
-  const params = useParams();
+  const cuteBear = useCuteBear();
+  const regionChange = useCuteBear((state) => state.region);
+  const countryChange = useCuteBear((state) => state.countryName);
+  const params = useParams().id;
 
   React.useEffect(() => {
-    setIsFetching(true);
-    const fetchCountries = async () => {
-      if (searchByCountry === "") {
-        const fetching = await fetch("https://restcountries.com/v2/all");
-        if (fetching.status !== 404) {
-          setCountryInvalid(false);
-          const parsedJSON = await fetching.json();
-          const countryMap = jsonParser(parsedJSON);
-          setIsFetching(false);
-          return setCountries(countryMap);
-        } else {
-          return setCountryInvalid(true);
-        }
-      } else {
-        return;
+    const x = async () => {
+      cuteBear.setIsCountryValid("fetching");
+      try {
+        cuteBear.setCountries(await fetchCountries(countryChange));
+      } catch {
+        cuteBear.setIsCountryValid("invalid");
+      } finally {
+        console.log("done");
       }
     };
 
-    const fetchCountryByName = async () => {
-      if (searchByCountry !== "") {
-        const fetching = await fetch(
-          `https://restcountries.com/v3.1/name/${searchByCountry}`
-        );
-        if (fetching.status !== 404) {
-          setCountryInvalid(false);
-          const parsedJSON = await fetching.json();
-          const countryMap = await jsonParser(parsedJSON);
-          setIsFetching(false);
-          return setCountries(countryMap);
-        } else {
-          return setCountryInvalid(true);
-        }
-      } else {
-        return;
+    const y = async () => {
+      cuteBear.setIsCountryValid("fetching");
+      try {
+        cuteBear.setCountries(await fetchCountryByName(countryChange));
+      } catch {
+        cuteBear.setIsCountryValid("invalid");
+      } finally {
+        console.log("done");
       }
     };
-    const timeOut = setTimeout(fetchCountryByName, 500);
-    const timeOut2 = setTimeout(fetchCountries, 500);
+
+    const timeOut = setTimeout(y, 500);
+    const timeOut2 = setTimeout(x, 500);
     return () => {
       clearTimeout(timeOut);
       clearTimeout(timeOut2);
     };
-  }, [searchByCountry]);
+  }, [countryChange]);
 
   React.useEffect(() => {
-    setIsFetching(true);
-    async function fetchCountriesByRegion() {
-      if (searchByRegion === "" || isFetching === true) return;
-      const fetching = await fetch(
-        `https://restcountries.com/v3.1/region/${searchByRegion}`
-      );
-      if (fetching.status !== 404) {
-        const parsedJSON = await fetching.json();
-        const countryMap = await jsonParser(parsedJSON);
-        setIsFetching(false);
-        return setCountries(countryMap);
-      } else {
-        return;
+    const x = async () => {
+      cuteBear.setIsCountryValid("fetching");
+      try {
+        cuteBear.setCountries(await fetchCountriesByRegion(regionChange));
+      } catch {
+        cuteBear.setIsCountryValid("invalid");
+      } finally {
+        console.log("done");
       }
-    }
-    const timeOut = setTimeout(fetchCountriesByRegion, 500);
-
+    };
+    const timeOut = setTimeout(x, 500);
     return () => {
       clearTimeout(timeOut);
     };
-  }, [searchByRegion]);
-
-  function getRegion(e: any) {
-    const value = e.target.getAttribute("data-value");
-    if (isFetching === true) {
-      return;
-    } else {
-      setSearchByRegion(value);
-    }
-  }
+  }, [regionChange]);
 
   return (
     <>
       <Navbar />
-
       <main className="main-container">
-        {params.id === undefined ? (
+        {params === undefined ? (
           <>
-            <Form
-              setDropdownState={setDropdownState}
-              dropdownState={dropdownState}
-              searchByCountry={searchByCountry}
-              setSearchByCountry={setSearchByCountry}
-              setSearchByRegion={setSearchByRegion}
-              searchByRegion={searchByRegion}
-              getRegion={getRegion}
-            />
-            <Countries
-              countries={countries}
-              isFetching={isFetching}
-              countryInvalid={countryInvalid}
-            />{" "}
+            <Form />
+            <Countries />
           </>
         ) : (
           <Outlet />
